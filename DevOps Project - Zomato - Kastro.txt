@@ -136,7 +136,7 @@ pipeline {
         }
         stage ("Git Checkout") {
             steps {
-                git 'https://github.com/KastroVKiran/Zomato-Project-Kastro.git'
+                git 'https://github.com/Sumantswain/DevOps-Project-Zomato-Kastro.git'
             }
         }
         stage("Sonarqube Analysis"){
@@ -179,8 +179,8 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'docker') {
-                        sh "docker tag zomato kastrov/zomato:latest "
-                        sh "docker push kastrov/zomato:latest "
+                        sh "docker tag zomato sumantswain/zomato:latest "
+                        sh "docker push sumantswain/zomato:latest "
                     }
                 }
             }
@@ -189,16 +189,16 @@ pipeline {
             steps {
                 script{
                    withDockerRegistry(credentialsId: 'docker', toolName: 'docker'){
-                       sh 'docker-scout quickview kastrov/zomato:latest'
-                       sh 'docker-scout cves kastrov/zomato:latest'
-                       sh 'docker-scout recommendations kastrov/zomato:latest'
+                       sh 'docker-scout quickview sumantswain/zomato:latest'
+                       sh 'docker-scout cves sumantswain/zomato:latest'
+                       sh 'docker-scout recommendations sumantswain/zomato:latest'
                    }
                 }
             }
         }
         stage ("Deploy to Container") {
             steps {
-                sh 'docker run -d --name zomato -p 3000:3000 kastrov/zomato:latest'
+                sh 'docker run -d --name zomato -p 3000:3000 sumantswain/zomato:latest'
             }
         }
     }
@@ -221,7 +221,7 @@ pipeline {
                 </body>
                 </html>
             """,
-            to: 'kastrokiran@gmail.com',
+            to: 'swainsumant986@gmail.com',
             mimeType: 'text/html',
             attachmentsPattern: 'trivy.txt'
         }
@@ -457,7 +457,11 @@ Default id and password is "admin"
 You can Set new password or you can click on "skip now".
 Click on "skip now" (If you want you can create the password)
 
-You will see the Grafana dashboard
+You will see the Grafana dashboard-ID
+https://grafana.com/grafana/dashboards/1860-node-exporter-full/
+
+Jenkins-Dashboard-url
+https://grafana.com/grafana/dashboards/9964-jenkins-performance-and-health-overview/
 
 The first thing that we have to do in Grafana is to add the data source
 Lets add the data source;
@@ -473,6 +477,27 @@ We need to run the same application on K8S cluster. In order to do that we need 
 
 Note 1: You might get errors while executing the below commands. Make sure to do the required configurations  eksctl, kubectl, and other tools.
 Note 2: Run the VS Code Editor/Power Shell/Command Prompt as Administrator, to avoid errors.
+
+Create EKS Cluster on AWS (Master machine)
+
+IAM user with access keys and secret access keys
+AWSCLI should be configured (Setup AWSCLI)
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+sudo apt install unzip
+unzip awscliv2.zip
+sudo ./aws/install
+aws configure
+
+Install kubectl (Master machine)(Setup kubectl )
+curl -o kubectl https://amazon-eks.s3.us-west-2.amazonaws.com/1.19.6/2021-01-05/bin/linux/amd64/kubectl
+chmod +x ./kubectl
+sudo mv ./kubectl /usr/local/bin
+kubectl version --short --client
+
+Install eksctl (Master machine) (Setup eksctl)
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+sudo mv /tmp/eksctl /usr/local/bin
+eksctl version
 
 Open vs code editor and execute the below commands; 
 Step 01: Create EKS Cluster using eksctl
